@@ -1,0 +1,21 @@
+OVERLAY DJ RADIAL — XXII GINCANA CULTURAL
+
+Este modelo segue o estilo da tela de transição enviada: fundo geométrico em
+azul, verde e amarelo, marca central e espectro radial animado.
+
+COMO USAR NO OBS
+
+1. Adicione uma Fonte de navegador.
+2. Marque "Arquivo local".
+3. Selecione dj-radial.html.
+4. Configure largura 1920 e altura 1080.
+5. Use 60 FPS, se disponível.
+
+ALTERAR DJ E MÚSICA
+
+Também é possível usar o caminho como URL com parâmetros:
+
+file:///CAMINHO/dj-radial.html?dj=DJ%20LUCAS&track=Música%20—%20Artista
+
+O espectro radial é uma animação visual contínua. Para reagir ao áudio real,
+será necessário um plugin de visualizador de áudio para o OBS.

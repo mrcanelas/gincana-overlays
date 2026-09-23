@@ -1,0 +1,7 @@
+node_modules/
+database/gincana.json
+database/backups/
+.DS_Store
+*.log
+.env
+uploads/

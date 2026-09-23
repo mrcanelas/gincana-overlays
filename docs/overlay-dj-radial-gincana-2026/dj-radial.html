@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Overlay DJ Radial — XXII Gincana Cultural</title>
+  <style>
+    :root {
+      --navy: #071c4a;
+      --navy2: #09295a;
+      --green: #0aa34f;
+      --green2: #16c66a;
+      --yellow: #ffd21c;
+      --cream: #fffaf0;
+      --ink: #071c4a;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+    body { font-family: Arial, Helvetica, sans-serif; background: var(--navy); }
+
+    .stage {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      isolation: isolate;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(12,51,104,.9), transparent 42%),
+        linear-gradient(135deg, var(--navy2), var(--navy));
+    }
+
+    .frame {
+      position: absolute;
+      inset: 18px;
+      z-index: 20;
+      border: 16px solid var(--green);
+      clip-path: polygon(0 0, 72% 0, 74% 3%, 100% 3%, 100% 100%, 64% 100%, 62% 97%, 0 97%);
+      filter: drop-shadow(0 0 14px rgba(10,163,79,.22));
+    }
+
+    .shape { position: absolute; will-change: transform; }
+    .shape.green-a {
+      z-index: 2;
+      inset: -8% 44% 32% -12%;
+      background: var(--green);
+      clip-path: polygon(0 10%, 55% 20%, 73% 4%, 100% 28%, 83% 84%, 28% 100%, 0 82%);
+      animation: driftA 12s ease-in-out infinite alternate;
+    }
+    .shape.green-b {
+      z-index: 1;
+      inset: 48% -13% -20% 46%;
+      background: var(--green);
+      clip-path: polygon(12% 0, 100% 4%, 100% 100%, 0 100%, 26% 65%, 0 36%);
+      animation: driftB 15s ease-in-out infinite alternate;
+    }
+    .shape.yellow-a {
+      z-index: 3;
+      width: 440px;
+      height: 260px;
+      left: 92px;
+      top: 50px;
+      background: var(--yellow);
+      clip-path: polygon(0 0, 100% 0, 58% 28%, 25% 16%, 0 65%);
+      animation: floatShape 9s ease-in-out infinite;
+    }
+    .shape.yellow-b {
+      z-index: 3;
+      width: 430px;
+      height: 300px;
+      right: -72px;
+      bottom: -60px;
+      background: var(--yellow);
+      clip-path: polygon(48% 0, 100% 15%, 100% 100%, 0 100%, 18% 60%);
+      animation: floatShape 11s 1s ease-in-out infinite reverse;
+    }
+
+    .swoosh {
+      position: absolute;
+      z-index: 4;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .swoosh path {
+      fill: none;
+      stroke: var(--yellow);
+      stroke-width: 32;
+      stroke-linecap: round;
+      stroke-dasharray: 2500;
+      stroke-dashoffset: 0;
+      animation: sweep 8s ease-in-out infinite alternate;
+    }
+
+    .center-system {
+      position: absolute;
+      z-index: 10;
+      left: 50%;
+      top: 50%;
+      width: 720px;
+      height: 720px;
+      transform: translate(-50%, -53%);
+    }
+
+    .spectrum {
+      position: absolute;
+      inset: 0;
+      animation: breathe 4s ease-in-out infinite;
+    }
+    .ray {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 8px;
+      height: 132px;
+      margin-left: -4px;
+      margin-top: -132px;
+      transform-origin: 50% 132px;
+      transform: rotate(var(--angle)) translateY(-232px);
+    }
+    .ray i {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      display: block;
+      width: 100%;
+      height: 42px;
+      border-radius: 6px;
+      background: var(--ray-color);
+      box-shadow: 0 0 13px color-mix(in srgb, var(--ray-color) 55%, transparent);
+      transform-origin: bottom;
+      animation: equalize var(--speed) ease-in-out var(--delay) infinite alternate;
+    }
+
+    .logo-disc {
+      position: absolute;
+      z-index: 3;
+      left: 50%;
+      top: 50%;
+      width: 430px;
+      height: 430px;
+      transform: translate(-50%, -50%);
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--cream);
+      box-shadow:
+        0 0 0 7px rgba(255,255,255,.22),
+        0 26px 70px rgba(0,0,0,.34);
+    }
+
+    .brand {
+      width: 330px;
+      display: grid;
+      grid-template-columns: 108px 1fr;
+      gap: 18px;
+      align-items: center;
+      color: var(--ink);
+    }
+
+    .tile-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 34px);
+      grid-template-rows: repeat(3, 34px);
+      gap: 3px;
+    }
+    .tile {
+      position: relative;
+      overflow: hidden;
+      border: 2px solid var(--ink);
+      background: var(--cream);
+    }
+    .tile::before,
+    .tile::after {
+      content: "";
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      border-radius: 65% 0 65% 0;
+      transform: rotate(45deg);
+    }
+    .tile::before { left: -8px; top: -8px; background: var(--green); }
+    .tile::after { right: -8px; bottom: -8px; background: var(--yellow); }
+    .tile:nth-child(2n)::before { background: var(--yellow); }
+    .tile:nth-child(2n)::after { background: var(--green); }
+    .tile:nth-child(3n) { background: var(--navy2); }
+    .tile:nth-child(4n)::after { background: #e85a36; }
+
+    .brand-copy .edition {
+      font-size: 22px;
+      font-weight: 900;
+      line-height: .9;
+    }
+    .brand-copy .title {
+      margin-top: 2px;
+      font-size: 30px;
+      font-weight: 950;
+      line-height: .88;
+      letter-spacing: -.8px;
+    }
+    .brand-copy .school {
+      margin-top: 7px;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 1.2px;
+    }
+    .theme {
+      grid-column: 1 / -1;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 2px solid var(--yellow);
+      text-align: center;
+      font-size: 10px;
+      font-weight: 900;
+      line-height: 1.35;
+      letter-spacing: .7px;
+    }
+
+    .dj-caption {
+      position: absolute;
+      z-index: 14;
+      left: 50%;
+      bottom: 76px;
+      transform: translateX(-50%);
+      min-width: 520px;
+      text-align: center;
+      color: white;
+      text-shadow: 0 4px 18px rgba(0,0,0,.55);
+    }
+    .dj-caption .mode {
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 6px;
+    }
+    #dj-name {
+      margin-top: 9px;
+      font-size: 42px;
+      font-weight: 950;
+      letter-spacing: 2px;
+    }
+    #track-name {
+      margin-top: 8px;
+      color: #ffe680;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+
+    .status {
+      position: absolute;
+      z-index: 15;
+      right: 62px;
+      top: 56px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 14px;
+      color: var(--navy);
+      border-radius: 999px;
+      background: rgba(255,250,240,.94);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      box-shadow: 0 9px 24px rgba(0,0,0,.18);
+    }
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #e84e31;
+      animation: pulse 1.6s ease-out infinite;
+    }
+
+    @keyframes equalize {
+      0% { height: 22px; opacity: .58; }
+      35% { height: 88px; opacity: 1; }
+      70% { height: 44px; opacity: .8; }
+      100% { height: 126px; opacity: 1; }
+    }
+    @keyframes breathe { 0%,100% { transform: scale(.98); } 50% { transform: scale(1.025); } }
+    @keyframes driftA { to { transform: translate(42px, 22px) rotate(2deg); } }
+    @keyframes driftB { to { transform: translate(-38px, -18px) rotate(-2deg); } }
+    @keyframes floatShape { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-18px); } }
+    @keyframes sweep { 0% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 310; } }
+    @keyframes pulse { 75% { box-shadow: 0 0 0 12px rgba(232,78,49,0); } }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage">
+    <div class="shape green-a"></div>
+    <div class="shape green-b"></div>
+    <div class="shape yellow-a"></div>
+    <div class="shape yellow-b"></div>
+    <svg class="swoosh" viewBox="0 0 1920 1080" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M-80 840 C360 560 515 150 960 474 C1270 700 1510 540 2020 170"/>
+    </svg>
+    <div class="frame"></div>
+
+    <div class="status"><span class="dot"></span> AO VIVO</div>
+
+    <section class="center-system">
+      <div class="spectrum" id="spectrum" aria-hidden="true"></div>
+      <div class="logo-disc">
+        <div class="brand">
+          <div class="tile-grid" aria-hidden="true">
+            <span class="tile"></span><span class="tile"></span><span class="tile"></span>
+            <span class="tile"></span><span class="tile"></span><span class="tile"></span>
+            <span class="tile"></span><span class="tile"></span><span class="tile"></span>
+          </div>
+          <div class="brand-copy">
+            <div class="edition">XXII</div>
+            <div class="title">GINCANA<br>CULTURAL</div>
+            <div class="school">CETI JOSÉ NOGUEIRA DE AGUIAR</div>
+          </div>
+          <div class="theme">BRASIL DE MUITOS BRASIS<br>SOMOS RITMOS, SABORES, CORES E SABERES</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="dj-caption">
+      <div class="mode">INTERVALO MUSICAL</div>
+      <div id="dj-name">DJ NOME</div>
+      <div id="track-name">AGORA TOCANDO • MÚSICA — ARTISTA</div>
+    </section>
+  </main>
+
+  <script>
+    const colors = ['#16c66a', '#16c66a', '#ffd21c', '#2d78de']
+    const spectrum = document.querySelector('#spectrum')
+    for (let i = 0; i < 72; i += 1) {
+      const ray = document.createElement('span')
+      ray.className = 'ray'
+      ray.style.setProperty('--angle', `${i * 5}deg`)
+      ray.style.setProperty('--ray-color', colors[Math.floor(i / 18)])
+      ray.style.setProperty('--speed', `${0.58 + (i % 9) * 0.075}s`)
+      ray.style.setProperty('--delay', `${-(i % 13) * 0.08}s`)
+      ray.appendChild(document.createElement('i'))
+      spectrum.appendChild(ray)
+    }
+
+    const params = new URLSearchParams(location.search)
+    document.querySelector('#dj-name').textContent = params.get('dj') || 'DJ NOME'
+    const track = params.get('track') || 'MÚSICA — ARTISTA'
+    document.querySelector('#track-name').textContent = `AGORA TOCANDO • ${track}`
+  </script>
+</body>
+</html>

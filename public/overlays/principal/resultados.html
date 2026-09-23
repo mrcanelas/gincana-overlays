@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Resultados — XXII Gincana Cultural</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/tema.css">
+  <style>
+    body{margin:0;overflow:hidden;background:transparent;font-family:Montserrat,Arial,sans-serif}
+    .stage{width:100vw;height:100vh;display:none;place-items:center;padding:5vh 5vw;background:linear-gradient(125deg,#f8f1e1 0 68%,#efe1c4 100%);position:relative}
+    .stage.show{display:grid}
+    .frame{position:absolute;inset:2.4vh 1.35vw;border:5px solid var(--azul);pointer-events:none}
+    .frame:after{content:"";position:absolute;inset:8px;border:2px solid var(--mostarda)}
+    .panel{width:min(1420px,84vw);min-height:70vh;display:flex;flex-direction:column;align-items:center;position:relative;z-index:3}
+    .eyebrow{font-size:clamp(15px,1.3vw,25px);letter-spacing:.22em;font-weight:800;color:var(--verde);margin-top:1vh}
+    .title{font-family:Georgia,serif;font-size:clamp(42px,5vw,96px);line-height:.94;text-align:center;margin:1.4vh 0 .5vh;color:var(--azul);text-transform:uppercase}
+    .subtitle{font-size:clamp(16px,1.35vw,27px);font-weight:800;letter-spacing:.08em;color:var(--terracota);text-transform:uppercase}
+    .ranking{width:min(1100px,74vw);display:grid;gap:1.5vh;margin-top:3vh}
+    .row{display:grid;grid-template-columns:110px 100px 1fr 220px;align-items:center;min-height:12vh;background:#fffdf7;border:2px solid #0b355528;border-left:11px solid var(--azul);box-shadow:var(--sombra);opacity:0;transform:translateY(35px) scale(.97);transition:.65s cubic-bezier(.2,.9,.25,1)}
+    .row.show{opacity:1;transform:none}
+    .row:nth-child(1){border-left-color:var(--mostarda)}
+    .place{font-family:Georgia,serif;font-size:clamp(30px,3.4vw,65px);font-weight:bold;text-align:center}
+    .team{font-size:clamp(22px,2.2vw,40px);font-weight:900;text-transform:uppercase}
+    .score{text-align:center;border-left:2px solid #0b355528;font-size:clamp(20px,2vw,38px);font-weight:900;color:var(--verde)}
+    .score small{display:block;font-size:.38em;letter-spacing:.16em;color:var(--azul);margin-top:4px}
+    .brand{position:absolute;left:3vw;bottom:2.7vh;font-size:14px;font-weight:800;color:var(--azul);letter-spacing:.08em}
+  </style>
+</head>
+<body class="obs-transparent">
+  <main class="stage" id="stage">
+    <div class="frame"></div>
+    <section class="panel">
+      <div class="eyebrow">XXII GINCANA CULTURAL • CETI JNA</div>
+      <h1 class="title" id="titulo">Resultado</h1>
+      <div class="subtitle" id="subtitulo">Resultado oficial</div>
+      <div class="ranking" id="ranking"></div>
+    </section>
+    <div class="brand">SOMOS RITMOS, SABORES, CORES E SABERES</div>
+  </main>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/client.js"></script>
+  <script>
+    const stage = document.getElementById('stage');
+    const client = Gincana.connect();
+    client.onState((state) => {
+      const r = state.resultado || {};
+      const on = !!r.visible;
+      stage.classList.toggle('show', on);
+      titulo.textContent = r.titulo || 'Resultado';
+      subtitulo.textContent = r.subtitulo || 'Resultado oficial';
+      const eqs = state.equipes || [];
+      const rows = (r.rankings || []).slice().sort((a, b) => a.posicao - b.posicao);
+      ranking.innerHTML = rows.map((row) => {
+        const eq = eqs.find((e) => e.id === row.equipeId) || {};
+        const pts = row.pontos != null ? row.pontos : (row.posicao === 1 ? 10 : 8);
+        return `<div class="row" data-i="${row.posicao}">
+          <div class="place">${row.posicao}º</div>
+          <div>${Gincana.brasaoHtml(eq, 70)}</div>
+          <div class="team">${eq.nome || 'Equipe'}</div>
+          <div class="score">${pts} PONTOS<small>RESULTADO</small></div>
+        </div>`;
+      }).join('');
+      [...ranking.querySelectorAll('.row')].forEach((el, i) => {
+        if (i < (r.revelados || 0)) el.classList.add('show');
+      });
+    });
+  </script>
+</body>
+</html>

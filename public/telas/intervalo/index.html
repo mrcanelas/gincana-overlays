@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Intervalo — XXII Gincana Cultural</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/tema.css">
+  <style>
+    :root {
+      --navy: #07375a;
+      --gold: #d4a017;
+      --terra: #b35a3a;
+      --cream: #f7f1e4;
+      --leaf: #2f7d3a;
+    }
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: var(--cream);
+      font-family: Montserrat, Arial, sans-serif;
+      color: var(--navy);
+    }
+    .stage {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      opacity: 0;
+      transition: opacity .4s;
+      background: var(--cream);
+    }
+    .stage.on-air { opacity: 1; }
+
+    .corner-blob {
+      position: absolute;
+      width: 34vw;
+      height: 34vw;
+      max-width: 520px;
+      max-height: 520px;
+      border-radius: 48% 52% 45% 55% / 55% 42% 58% 45%;
+      opacity: .95;
+      pointer-events: none;
+    }
+    .blob-tl {
+      top: -8%; left: -6%;
+      background: radial-gradient(circle at 40% 40%, #1a4f7a 0 35%, #0b3a5c 36% 62%, transparent 63%),
+                  radial-gradient(circle at 70% 55%, var(--gold) 0 28%, transparent 29%),
+                  radial-gradient(circle at 55% 75%, var(--terra) 0 26%, transparent 27%);
+    }
+    .blob-br {
+      bottom: -10%; right: -8%;
+      background: radial-gradient(circle at 55% 45%, #1a4f7a 0 34%, #0b3a5c 35% 60%, transparent 61%),
+                  radial-gradient(circle at 30% 40%, var(--gold) 0 24%, transparent 25%),
+                  radial-gradient(circle at 45% 70%, var(--terra) 0 28%, transparent 29%);
+      transform: rotate(160deg);
+    }
+    .leaf {
+      position: absolute;
+      width: 54px;
+      height: 54px;
+      background: var(--leaf);
+      clip-path: polygon(50% 0, 78% 28%, 70% 62%, 50% 100%, 30% 62%, 22% 28%);
+      opacity: .9;
+    }
+    .leaf-tr { top: 7vh; right: 6vw; transform: rotate(18deg); }
+    .leaf-bl { bottom: 8vh; left: 5.5vw; transform: rotate(-22deg); }
+
+    .header {
+      position: absolute;
+      top: 6.5vh;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      z-index: 5;
+      width: min(900px, 80vw);
+    }
+    .header h1 {
+      margin: 0;
+      font-size: clamp(28px, 3.4vw, 52px);
+      font-weight: 900;
+      letter-spacing: .04em;
+      line-height: 1.05;
+    }
+    .header p {
+      margin: .6vh 0 0;
+      font-size: clamp(14px, 1.35vw, 22px);
+      font-weight: 800;
+      letter-spacing: .12em;
+    }
+    .floreio {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      margin: 0 12px;
+      background: var(--gold);
+      clip-path: polygon(50% 0, 80% 35%, 100% 50%, 80% 65%, 50% 100%, 20% 65%, 0 50%, 20% 35%);
+      vertical-align: middle;
+    }
+
+    .center {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      z-index: 4;
+    }
+    .system {
+      position: relative;
+      width: min(62vh, 58vw);
+      height: min(62vh, 58vw);
+      display: grid;
+      place-items: center;
+    }
+    .spectrum {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+    }
+    .ray {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 7px;
+      height: 100%;
+      transform: translate(-50%, -50%) rotate(var(--angle));
+      transform-origin: center center;
+      pointer-events: none;
+    }
+    .ray i {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 4%;
+      height: var(--h, 18px);
+      border-radius: 8px;
+      background: var(--navy);
+      opacity: .92;
+      transition: height 60ms linear;
+    }
+    .mosaic {
+      position: relative;
+      z-index: 2;
+      width: 58%;
+      aspect-ratio: 1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+      padding: 10px;
+      background: #fff;
+      border: 4px solid #e7dcc4;
+      box-shadow: 0 18px 40px #00305622;
+    }
+    .tile {
+      background: #f4efe4;
+      border: 1px solid #e2d6bb;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .tile img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .tile.center-seal {
+      background: radial-gradient(circle at 50% 40%, #fff, #eef5ef 70%);
+    }
+    .tile .emoji {
+      font-size: clamp(18px, 2.2vw, 34px);
+      line-height: 1;
+    }
+    .seal-text {
+      text-align: center;
+      font-size: clamp(8px, .7vw, 12px);
+      font-weight: 900;
+      letter-spacing: .04em;
+      color: var(--navy);
+      padding: 4px;
+    }
+
+    .footer-label {
+      position: absolute;
+      bottom: 6vh;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 5;
+      font-size: clamp(36px, 5vw, 78px);
+      font-weight: 900;
+      letter-spacing: .08em;
+    }
+    .mic-status {
+      position: absolute;
+      right: 3vw;
+      top: 3vh;
+      z-index: 6;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      color: #07375a99;
+      background: #ffffffaa;
+      padding: 8px 12px;
+      border-radius: 999px;
+    }
+    .mic-status.live { color: var(--verde); }
+    .mic-status.idle { color: var(--terracota); }
+  </style>
+</head>
+<body>
+  <main class="stage" id="stage">
+    <div class="corner-blob blob-tl"></div>
+    <div class="corner-blob blob-br"></div>
+    <i class="leaf leaf-tr"></i>
+    <i class="leaf leaf-bl"></i>
+    <div class="mic-status idle" id="micStatus">MIC IDLE</div>
+
+    <header class="header">
+      <h1><span class="floreio"></span>XXII GINCANA CULTURAL<span class="floreio"></span></h1>
+      <p>CETI JOSÉ NOGUEIRA DE AGUIAR</p>
+    </header>
+
+    <div class="center">
+      <div class="system">
+        <div class="spectrum" id="spectrum" aria-hidden="true"></div>
+        <div class="mosaic" id="mosaic">
+          <div class="tile"><span class="emoji">🗺️</span></div>
+          <div class="tile"><div class="seal-text">50<br>ANOS</div></div>
+          <div class="tile"><span class="emoji">🌴</span></div>
+          <div class="tile"><span class="emoji">🎸</span></div>
+          <div class="tile center-seal">
+            <img src="/telas/abertura/assets/mosaico-gincana.svg" alt="Brasão" style="width:78%;height:78%;object-fit:contain">
+          </div>
+          <div class="tile"><span class="emoji">🥭</span></div>
+          <div class="tile"><span class="emoji">🏞️</span></div>
+          <div class="tile"><span class="emoji">🎨</span></div>
+          <div class="tile"><span class="emoji">📖</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-label">INTERVALO</div>
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/client.js"></script>
+  <script>
+    const BAR_COUNT = 64;
+    const spectrum = document.getElementById('spectrum');
+    const stage = document.getElementById('stage');
+    const micStatus = document.getElementById('micStatus');
+    const rays = [];
+    let sensitivity = 1.2;
+    let audioCtx, analyser, dataArray, micStream;
+    let rafId = null;
+    let useMic = false;
+
+    for (let i = 0; i < BAR_COUNT; i++) {
+      const ray = document.createElement('span');
+      ray.className = 'ray';
+      ray.style.setProperty('--angle', `${(360 / BAR_COUNT) * i}deg`);
+      const bar = document.createElement('i');
+      bar.style.setProperty('--h', '14px');
+      ray.appendChild(bar);
+      spectrum.appendChild(ray);
+      rays.push(bar);
+    }
+
+    function idleFrame(t) {
+      for (let i = 0; i < rays.length; i++) {
+        const wave = 14 + Math.sin(t / 220 + i * 0.35) * 10 + Math.sin(t / 480 + i) * 8;
+        rays[i].style.setProperty('--h', `${Math.max(8, wave)}px`);
+      }
+    }
+
+    function micFrame() {
+      analyser.getByteFrequencyData(dataArray);
+      const step = Math.floor(dataArray.length / BAR_COUNT);
+      for (let i = 0; i < BAR_COUNT; i++) {
+        const v = dataArray[i * step] / 255;
+        const h = 10 + v * 70 * sensitivity;
+        rays[i].style.setProperty('--h', `${h}px`);
+      }
+    }
+
+    function loop(t) {
+      if (useMic && analyser) micFrame();
+      else idleFrame(t || performance.now());
+      rafId = requestAnimationFrame(loop);
+    }
+
+    async function startMic() {
+      try {
+        micStream = await navigator.mediaDevices.getUserMedia({
+          audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false },
+          video: false,
+        });
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const source = audioCtx.createMediaStreamSource(micStream);
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 256;
+        analyser.smoothingTimeConstant = 0.72;
+        source.connect(analyser);
+        dataArray = new Uint8Array(analyser.frequencyBinCount);
+        useMic = true;
+        micStatus.textContent = 'MIC LIVE';
+        micStatus.className = 'mic-status live';
+      } catch (err) {
+        useMic = false;
+        micStatus.textContent = 'MIC IDLE';
+        micStatus.className = 'mic-status idle';
+        console.warn('Microfone indisponível, usando idle:', err.message);
+      }
+    }
+
+    const client = Gincana.connect();
+    client.onState((state) => {
+      const on = state.intervalo && state.intervalo.visible;
+      stage.classList.toggle('on-air', !!on);
+      if (state.intervalo && state.intervalo.sensitivity != null) {
+        sensitivity = Number(state.intervalo.sensitivity) || 1.2;
+      }
+      if (on && !audioCtx) startMic();
+      if (on && audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    });
+
+    loop();
+  </script>
+</body>
+</html>

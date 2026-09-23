@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Prévia — XXII Gincana</title>
+  <style>
+    html, body { margin: 0; width: 100%; height: 100%; background: #1a1a1a; overflow: hidden; }
+    iframe { width: 100%; height: 100%; border: 0; background: #f5edda; transform-origin: top left; }
+  </style>
+</head>
+<body>
+  <iframe id="frame" src="/intervalo" title="Prévia"></iframe>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/client.js"></script>
+  <script>
+    const frame = document.getElementById('frame');
+    const map = {
+      abertura: '/tela',
+      intervalo: '/intervalo',
+      cronometro: '/cronometro',
+      resultado: '/resultados',
+      apuracao: '/apuracao',
+      placar: '/placar',
+    };
+    const client = Gincana.connect();
+    client.onState((state) => {
+      const mode = (state.air && state.air.mode) || 'intervalo';
+      const url = map[mode] || '/intervalo';
+      if (!frame.src.endsWith(url)) frame.src = url;
+    });
+  </script>
+</body>
+</html>

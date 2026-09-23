@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Placeholder Equipe B">
+  <circle cx="256" cy="256" r="240" fill="#b9472e"/>
+  <circle cx="256" cy="256" r="200" fill="none" stroke="#d99a08" stroke-width="16"/>
+  <text x="256" y="290" text-anchor="middle" font-family="Georgia, serif" font-size="180" font-weight="700" fill="#f5edda">B</text>
+</svg>

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Abertura — XXII Gincana Cultural</title>
+  <link rel="stylesheet" href="./assets/index-DGnn2OF6.css">
+  <link rel="stylesheet" href="/css/tema.css">
+  <style>
+    body { margin: 0; background: #faf3e7; overflow: hidden; }
+    .broadcast-canvas { opacity: 0; transition: opacity .45s; }
+    .broadcast-canvas.on-air { opacity: 1; }
+    .day-badge {
+      position: absolute; left: 50%; bottom: 7vh; transform: translateX(-50%);
+      font-family: Montserrat, Arial, sans-serif; font-weight: 800; letter-spacing: .18em;
+      color: #07375a; font-size: clamp(14px, 1.2vw, 22px); opacity: 0; transition: opacity .4s;
+    }
+    .day-badge.show { opacity: 1; }
+    .replay-hint { display: none !important; }
+  </style>
+</head>
+<body>
+  <main class="broadcast-canvas" id="broadcast" aria-label="Abertura animada da XXII Gincana Cultural">
+    <section class="opening" id="opening">
+      <img class="corner corner--top-left" src="./assets/canto-superior-esquerdo.png" alt="">
+      <img class="corner corner--top-right" src="./assets/canto-superior-direito.png" alt="">
+      <img class="corner corner--bottom-left" src="./assets/canto-inferior-esquerdo.png" alt="">
+      <img class="corner corner--bottom-right" src="./assets/canto-inferior-direito.png" alt="">
+      <div class="mosaic-wrap">
+        <span class="mosaic-shadow" aria-hidden="true"></span>
+        <img class="mosaic" src="./assets/mosaico-gincana.svg" alt="Mosaico Brasil de Muitos Brasis">
+        <span class="light-sweep" aria-hidden="true"></span>
+      </div>
+      <div class="title-lockup">
+        <img class="flourish flourish--left" src="./assets/floreio-esquerdo.png" alt="">
+        <div class="title-copy">
+          <h1>XXII GINCANA CULTURAL</h1>
+          <p>CETI JOSÉ NOGUEIRA DE AGUIAR</p>
+        </div>
+        <img class="flourish flourish--right" src="./assets/floreio-direito.png" alt="">
+      </div>
+      <div class="day-badge" id="dayBadge"></div>
+    </section>
+  </main>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/client.js"></script>
+  <script>
+    const broadcast = document.getElementById('broadcast');
+    const dayBadge = document.getElementById('dayBadge');
+    function replay() {
+      const current = document.getElementById('opening');
+      const fresh = current.cloneNode(true);
+      current.parentNode.replaceChild(fresh, current);
+    }
+    const client = Gincana.connect();
+    client.onState((state) => {
+      const on = state.abertura && state.abertura.visible;
+      broadcast.classList.toggle('on-air', !!on);
+      if (on) {
+        const dia = state.abertura.dia || '';
+        dayBadge.textContent = dia;
+        dayBadge.classList.toggle('show', !!dia);
+        replay();
+      }
+    });
+  </script>
+</body>
+</html>

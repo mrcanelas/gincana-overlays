@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Cronômetro — XXII Gincana Cultural</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Georgia&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/tema.css">
+  <style>
+    body { margin: 0; overflow: hidden; background: transparent; font-family: Montserrat, Arial, sans-serif; }
+    .card {
+      position: absolute; right: 3vw; top: 4vh; min-width: 320px;
+      background: linear-gradient(160deg, #fffdf8, #f0e4c8); border: 3px solid var(--azul);
+      box-shadow: var(--sombra); padding: 18px 22px; opacity: 0; transform: translateY(-12px);
+      transition: .35s; border-radius: 6px;
+    }
+    .card.show { opacity: 1; transform: none; }
+    .card.notice { border-color: var(--mostarda); }
+    .card.warning { border-color: var(--mostarda); background: linear-gradient(160deg, #fff8e6, #f5d98a); }
+    .card.critical, .card.ended { border-color: var(--terracota); background: linear-gradient(160deg, #ffe8e0, #f2b29a); }
+    .label { font-size: 12px; font-weight: 900; letter-spacing: .16em; color: var(--verde); text-transform: uppercase; }
+    .team { display: flex; align-items: center; gap: 12px; margin: 10px 0 6px; }
+    .team span { font-weight: 900; font-size: 18px; color: var(--azul); text-transform: uppercase; }
+    .time { font-family: Georgia, serif; font-size: 64px; line-height: 1; font-weight: bold; color: var(--azul); }
+    .hint { margin-top: 6px; font-size: 12px; font-weight: 800; color: #07375a99; letter-spacing: .08em; }
+    .ended-msg { display: none; margin-top: 8px; font-weight: 900; color: var(--terracota); letter-spacing: .1em; }
+    .card.ended .ended-msg { display: block; }
+  </style>
+</head>
+<body class="obs-transparent">
+  <div class="card" id="card">
+    <div class="label" id="label">Apresentação</div>
+    <div class="team" id="team"></div>
+    <div class="time" id="time">15:00</div>
+    <div class="hint" id="hint">TEMPO LIMITE</div>
+    <div class="ended-msg">TEMPO ENCERRADO</div>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/client.js"></script>
+  <script>
+    const card = document.getElementById('card');
+    const client = Gincana.connect();
+    function render(state) {
+      const t = state.timer || {};
+      const on = state.air && state.air.mode === 'cronometro' && state.air.visible;
+      card.className = 'card' + (on ? ' show' : '') + (t.alertLevel && t.alertLevel !== 'normal' ? ' ' + t.alertLevel : '');
+      time.textContent = t.display || '00:00';
+      label.textContent = t.label || (t.mode === 'transicao' ? 'Transição' : 'Apresentação');
+      hint.textContent = t.mode === 'transicao' ? 'MONTAGEM / DESMONTAGEM' : 'TEMPO LIMITE';
+      const eq = (state.equipes || []).find((e) => e.id === t.equipeId);
+      team.innerHTML = eq ? `${Gincana.brasaoHtml(eq, 48)}<span>${eq.nome}</span>` : '';
+    }
+    client.onState(render);
+  </script>
+</body>
+</html>

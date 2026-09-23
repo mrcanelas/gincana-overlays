@@ -1,0 +1,57 @@
+:root {
+  --azul: #07375a;
+  --azul2: #061f3f;
+  --verde: #17663f;
+  --mostarda: #d99a08;
+  --ouro: #dda20e;
+  --terracota: #b9472e;
+  --creme: #f5edda;
+  --creme2: #faf3e7;
+  --papel: #fffdf7;
+  --branco: #fffdf7;
+  --sombra: 0 18px 50px #00152d55;
+  --font-sans: "Montserrat", "Segoe UI", Arial, sans-serif;
+  --font-serif: Georgia, "Times New Roman", serif;
+}
+
+* { box-sizing: border-box; }
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  font-family: var(--font-sans);
+  color: var(--azul2);
+}
+
+.obs-transparent {
+  background: transparent;
+  overflow: hidden;
+}
+
+.hidden { display: none !important; }
+.visible { display: block; }
+
+.brazao {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  background: var(--papel);
+  border-radius: 50%;
+  border: 3px solid var(--mostarda);
+}
+
+.brazao.placeholder {
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  font-size: 18px;
+  color: var(--azul);
+  background: linear-gradient(135deg, var(--creme), #efe1c4);
+}
+
+.stage-full {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}

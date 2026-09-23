@@ -1,0 +1,27 @@
+OVERLAYS DE RESULTADOS — XXII GINCANA CULTURAL 2026
+
+ARQUIVOS
+1. 01-resultados-jogos-solidaria.html
+   Divulga Jogos Esportivos, Jogos Online e Prova Solidária.
+   Teclas: 1, 2 ou 3 escolhem a categoria; ESPAÇO revela uma colocação; R reinicia.
+   Também é possível abrir com ?categoria=1, ?categoria=2 ou ?categoria=3 no final do endereço.
+
+2. 02-apuracao-geral.html
+   Apuração geral no estilo escola de samba, revelando uma nota de jurado por vez.
+   Teclas: ESPAÇO revela a próxima nota; seta direita/esquerda troca a equipe;
+   R reinicia a equipe atual; W abre/fecha a tela da campeã.
+
+COMO USAR NO OBS
+- Adicione uma Fonte de navegador.
+- Marque “Arquivo local” e selecione o HTML desejado.
+- Defina 1920 × 1080.
+- Clique com o botão direito na fonte e use “Interagir” para acionar as teclas.
+
+COMO EDITAR
+- Abra o HTML no Bloco de Notas ou editor de código.
+- No fim do arquivo, localize “EDITE AQUI”.
+- Troque nomes, pontos e notas sem retirar aspas, colchetes ou vírgulas.
+- Salve e atualize a fonte no OBS.
+
+OBSERVAÇÃO
+Os números incluídos são exemplos. Substitua-os pelos resultados oficiais antes da transmissão.

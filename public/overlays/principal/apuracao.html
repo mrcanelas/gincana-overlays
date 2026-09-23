@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Apuração — XXII Gincana Cultural</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/tema.css">
+  <style>
+    body{margin:0;overflow:hidden;background:transparent;font-family:Montserrat,Arial,sans-serif;color:var(--azul2)}
+    .stage{width:100vw;height:100vh;display:none;flex-direction:column;align-items:center;padding:4.7vh 4vw;background:radial-gradient(circle at 50% 25%,#fffdf8,#f2e6ce 78%);position:relative}
+    .stage.show{display:flex}
+    .event{font-size:clamp(14px,1.15vw,23px);letter-spacing:.18em;font-weight:900;color:var(--verde)}
+    h1{font-family:Georgia,serif;font-size:clamp(42px,4.7vw,90px);line-height:1;margin:1.2vh 0 .4vh;text-transform:uppercase;color:var(--azul)}
+    .under{font-size:clamp(15px,1.2vw,24px);text-transform:uppercase;font-weight:800;letter-spacing:.12em;color:var(--terracota)}
+    .teamcard{margin-top:3vh;width:min(1540px,88vw);background:var(--papel);box-shadow:var(--sombra);border:3px solid var(--azul);padding:3.2vh 3vw 3.6vh;position:relative}
+    .teamhead{display:flex;align-items:center;justify-content:center;gap:18px}
+    .teamname{font-size:clamp(28px,3vw,54px);font-weight:950;color:var(--azul);text-transform:uppercase}
+    .notes{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4vw;margin:3vh 0 2.5vh;width:min(1100px,100%)}
+    .note{height:21vh;min-height:150px;border:2px solid #0a35543c;background:#f8f0df;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden}
+    .juror{position:absolute;top:14px;font-size:clamp(11px,.9vw,16px);font-weight:900;letter-spacing:.09em;color:var(--verde);text-transform:uppercase}
+    .value{font-family:Georgia,serif;font-size:clamp(44px,5vw,96px);font-weight:bold;color:var(--azul);opacity:0;transform:scale(1.6)}
+    .note.reveal .value{opacity:1;transform:none;transition:.7s cubic-bezier(.15,.9,.18,1)}
+    .note.reveal{border-color:var(--ouro);box-shadow:0 0 0 4px #dda20e38}
+    .note.current{animation:pulse 1s infinite alternate}
+    @keyframes pulse{to{box-shadow:0 0 0 8px #dda20e44}}
+    .bottom{display:grid;grid-template-columns:1fr 330px;gap:2vw}
+    .status{background:var(--azul2);color:var(--creme);display:flex;align-items:center;padding:0 2.5vw;font-size:clamp(16px,1.5vw,28px);font-weight:850}
+    .total{background:var(--ouro);color:var(--azul2);text-align:center;padding:1.1vh 1vw}
+    .total b{display:block;font-family:Georgia,serif;font-size:clamp(40px,4vw,75px);line-height:1}
+    .winner{position:absolute;inset:0;display:grid;place-items:center;background:#061d3cef;opacity:0;pointer-events:none;transition:.7s;z-index:5}
+    .winner.show{opacity:1}
+    .winnerbox{text-align:center;color:var(--creme)}
+    .winner .small{font-weight:900;letter-spacing:.3em;color:var(--ouro);font-size:clamp(18px,1.5vw,30px)}
+    .winner .big{font-family:Georgia,serif;font-size:clamp(52px,7vw,130px);font-weight:bold;text-transform:uppercase}
+    .winner .pts{font-size:clamp(24px,2.5vw,48px);font-weight:900;color:var(--ouro)}
+  </style>
+</head>
+<body class="obs-transparent">
+  <main class="stage" id="stage">
+    <div class="event">XXII GINCANA CULTURAL • CETI JNA</div>
+    <h1>Apuração Geral</h1>
+    <div class="under">Nota por nota • resultado oficial</div>
+    <section class="teamcard">
+      <div class="teamhead">
+        <div id="brasao"></div>
+        <div class="teamname" id="teamname">—</div>
+      </div>
+      <div class="notes" id="notes"></div>
+      <div class="bottom">
+        <div class="status" id="status">Aguardando…</div>
+        <div class="total"><b id="total">—</b><span style="font-weight:900;font-size:13px;letter-spacing:.14em">TOTAL</span></div>
+      </div>
+    </section>
+    <section class="winner" id="winner">
+      <div class="winnerbox">
+        <div class="small">CAMPEÃ GERAL • 2026</div>
+        <div id="winnerBrasao" style="margin:2vh auto"></div>
+        <div class="big" id="winnerName">—</div>
+        <div class="pts" id="winnerPts"></div>
+      </div>
+    </section>
+  </main>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/client.js"></script>
+  <script>
+    const stage = document.getElementById('stage');
+    const client = Gincana.connect();
+    client.onState((state) => {
+      const a = state.apuracao || {};
+      stage.classList.toggle('show', !!a.visible);
+      winner.classList.toggle('show', !!a.showWinner);
+      const eqs = state.equipes || [];
+      const eq = eqs.find((e) => e.id === a.equipeId) || eqs[0];
+      if (!eq) return;
+      teamname.textContent = eq.nome;
+      brasao.innerHTML = Gincana.brasaoHtml(eq, 72);
+      const allNotas = a.notas || [];
+      const notasEq = allNotas.filter((n) => n.equipe_id === eq.id);
+      const jurados = state.jurados || [];
+      notes.innerHTML = jurados.map((j) => {
+        const n = notasEq.find((x) => x.jurado_id === j.id);
+        const revealed = n && n.revelada;
+        const current = n && !n.revelada && a.reveladas && !a.reveladas.includes(n.id);
+        return `<div class="note ${revealed ? 'reveal' : ''} ${current ? 'current' : ''}">
+          <div class="juror">${j.nome}</div>
+          <div class="value">${n && n.nota != null ? Number(n.nota).toFixed(1) : '—'}</div>
+        </div>`;
+      }).join('');
+      const revealed = notasEq.filter((n) => n.revelada && n.nota != null);
+      if (revealed.length && revealed.length === notasEq.filter((n) => n.nota != null).length) {
+        const sum = revealed.reduce((s, n) => s + Number(n.nota), 0);
+        total.textContent = sum.toFixed(1);
+        status.textContent = 'TOTAL CONFIRMADO';
+      } else {
+        total.textContent = '—';
+        status.textContent = revealed.length ? `Notas reveladas: ${revealed.length}` : 'Aguardando a primeira nota…';
+      }
+      if (a.showWinner) {
+        const d = state.desempate || {};
+        const campeã = d.campeã || [...eqs].sort((x, y) => y.pontuacao_total - x.pontuacao_total)[0];
+        if (campeã) {
+          winnerName.textContent = campeã.nome;
+          winnerPts.textContent = `${Gincana.fmtPts(campeã.pontuacao_total)} PONTOS`;
+          winnerBrasao.innerHTML = Gincana.brasaoHtml(campeã, 120);
+        }
+      }
+    });
+  </script>
+</body>
+</html>

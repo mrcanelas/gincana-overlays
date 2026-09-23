@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Controle — XXII Gincana Cultural</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/tema.css">
+  <link rel="stylesheet" href="./controle.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <strong>TRANSMISSÃO AO VIVO</strong>
+      <span>XXII Gincana Cultural • CETI JNA</span>
+    </div>
+    <div class="status-wrap">
+      <span class="pill" id="connPill">DESCONECTADO</span>
+      <span class="pill air" id="airPill">OCULTO</span>
+      <span class="pill lock" id="lockPill">EDITÁVEL</span>
+    </div>
+    <div class="top-actions">
+      <button type="button" class="btn danger" id="btnClear">LIMPAR</button>
+      <button type="button" class="btn" id="btnLock">Bloquear</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="modules" id="modules">
+      <button type="button" data-mod="cenas" class="active">Cenas</button>
+      <button type="button" data-mod="timer">Cronômetro</button>
+      <button type="button" data-mod="intervalo">Intervalo</button>
+      <button type="button" data-mod="resultados">Resultados</button>
+      <button type="button" data-mod="apuracao">Apuração</button>
+      <button type="button" data-mod="placar">Placar</button>
+      <button type="button" data-mod="equipes">Equipes</button>
+      <button type="button" data-mod="backup">Backup</button>
+    </nav>
+
+    <section class="panel" id="panel"></section>
+
+    <aside class="preview">
+      <div class="preview-label">PRÉVIA</div>
+      <iframe id="previewFrame" src="/previa" title="Prévia"></iframe>
+      <div class="scorebar" id="scorebar"></div>
+    </aside>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/client.js"></script>
+  <script src="./controle.js"></script>
+</body>
+</html>

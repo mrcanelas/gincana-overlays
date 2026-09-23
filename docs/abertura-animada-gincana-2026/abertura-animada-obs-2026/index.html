@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Abertura — XXII Gincana Cultural</title>
+  <link rel="stylesheet" href="./assets/index-DGnn2OF6.css">
+</head>
+<body>
+  <main class="broadcast-canvas" id="broadcast" aria-label="Abertura animada da XXII Gincana Cultural">
+    <section class="opening" id="opening">
+      <img class="corner corner--top-left" src="./assets/canto-superior-esquerdo.png" alt="">
+      <img class="corner corner--top-right" src="./assets/canto-superior-direito.png" alt="">
+      <img class="corner corner--bottom-left" src="./assets/canto-inferior-esquerdo.png" alt="">
+      <img class="corner corner--bottom-right" src="./assets/canto-inferior-direito.png" alt="">
+
+      <div class="mosaic-wrap">
+        <span class="mosaic-shadow" aria-hidden="true"></span>
+        <img class="mosaic" src="./assets/mosaico-gincana.svg" alt="Mosaico Brasil de Muitos Brasis com o brasão do CETI José Nogueira de Aguiar">
+        <span class="light-sweep" aria-hidden="true"></span>
+      </div>
+
+      <div class="title-lockup">
+        <img class="flourish flourish--left" src="./assets/floreio-esquerdo.png" alt="">
+        <div class="title-copy">
+          <h1>XXII GINCANA CULTURAL</h1>
+          <p>CETI JOSÉ NOGUEIRA DE AGUIAR</p>
+        </div>
+        <img class="flourish flourish--right" src="./assets/floreio-direito.png" alt="">
+      </div>
+
+      <p class="replay-hint">Clique ou pressione espaço para repetir</p>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      var canvas = document.getElementById('broadcast');
+
+      function replay() {
+        var current = document.getElementById('opening');
+        var fresh = current.cloneNode(true);
+        current.parentNode.replaceChild(fresh, current);
+      }
+
+      canvas.addEventListener('click', replay);
+      window.addEventListener('keydown', function (event) {
+        if (event.code === 'Space' || event.key === 'r' || event.key === 'R') {
+          event.preventDefault();
+          replay();
+        }
+      });
+    }());
+  </script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+ABERTURA ANIMADA — XXII GINCANA CULTURAL 2026
+
+FORMATO
+- Composição 16:9, recomendada para 1920 × 1080.
+- Mantém automaticamente a proporção original em outras resoluções.
+- Utiliza o mosaico vetorial fornecido pela organização.
+
+COMANDOS
+- Clique na tela para repetir a animação.
+- Pressione ESPAÇO para repetir a animação.
+- A tecla R também reinicia a entrada.
+
+USO NO OBS
+1. Extraia todo o conteúdo do arquivo ZIP sem alterar a estrutura das pastas.
+2. Teste primeiro abrindo index.html com dois cliques no Windows. A arte deve aparecer imediatamente.
+3. No OBS, adicione uma Fonte de navegador.
+4. Marque “Arquivo local” e selecione index.html.
+5. Configure a largura como 1920 e a altura como 1080.
+6. Para repetir a animação, clique com o botão direito na fonte, escolha “Interagir” e pressione ESPAÇO.
+
+IMPORTANTE
+- Não mova somente o index.html: a pasta assets precisa permanecer ao lado dele.
+- Esta versão funciona diretamente no Windows e no OBS, sem servidor local e sem instalação.
+- Se desejar que a animação reinicie sempre que a cena for exibida, ative no OBS a opção de atualizar o navegador quando a cena se tornar ativa.
